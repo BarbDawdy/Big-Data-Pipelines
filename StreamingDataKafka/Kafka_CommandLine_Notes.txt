@@ -1,0 +1,121 @@
+#basic Kafka information for testing out messages and ports to ensure all is working
+
+#in vagrant ssh cd to the /vagrant directory
+cd /vagrant
+
+#in the vagrant dir you can run the kafka-topic command to get help on all commands
+
+
+kafka-topics --help
+Command must include exactly one action: --list, --describe, --create, --alter or --delete
+Option                                  Description
+------                                  -----------
+--alter                                 Alter the number of partitions,
+                                          replica assignment, and/or
+                                          configuration for the topic.
+--config <name=value>                   A topic configuration override for the
+                                          topic being created or altered.The
+                                          following is a list of valid
+                                          configurations:
+                                                cleanup.policy                  
+                                                compression.type                
+                                                delete.retention.ms             
+                                                file.delete.delay.ms            
+                                                flush.messages                  
+                                                flush.ms                        
+                                                index.interval.bytes            
+                                                max.message.bytes               
+                                                min.cleanable.dirty.ratio       
+                                                min.insync.replicas             
+                                                preallocate                     
+                                                retention.bytes                 
+                                                retention.ms                    
+                                                segment.bytes                   
+                                                segment.index.bytes             
+                                                segment.jitter.ms               
+                                                segment.ms                      
+                                                unclean.leader.election.enable  
+                                        See the Kafka documentation for full
+                                          details on the topic configs.
+--create                                Create a new topic.
+--delete                                Delete a topic
+--delete-config <name>                  A topic configuration override to be
+                                          removed for an existing topic (see
+                                          the list of configurations under the
+                                          --config option).
+--describe                              List details for the given topics.
+--help                                  Print usage information.
+--list                                  List all available topics.
+--partitions <Integer: # of partitions> The number of partitions for the topic
+                                          being created or altered (WARNING:
+                                          If partitions are increased for a
+                                          topic that has a key, the partition
+                                          logic or ordering of the messages
+                                          will be affected
+--replica-assignment                    A list of manual partition-to-broker
+  <broker_id_for_part1_replica1 :         assignments for the topic being
+  broker_id_for_part1_replica2 ,          created or altered.
+  broker_id_for_part2_replica1 :
+  broker_id_for_part2_replica2 , ...>
+--replication-factor <Integer:          The replication factor for each
+  replication factor>                     partition in the topic being created.
+--topic <topic>                         The topic to be create, alter or
+                                          describe. Can also accept a regular
+                                          expression except for --create option
+--topics-with-overrides                 if set when describing topics, only
+                                          show topics that have overridden
+                                          configs
+--unavailable-partitions                if set when describing topics, only
+                                          show partitions whose leader is not
+                                          available
+--under-replicated-partitions           if set when describing topics, only
+                                          show under replicated partitions
+--zookeeper <urls>                      REQUIRED: The connection string for
+                                          the zookeeper connection in the form
+                                          host:port. Multiple URLS can be
+                                          given to allow fail-over.
+
+#check on the SPD_911 topic already created
+$ kafka-topics --describe --zookeeper localhost:2181 --topic SPD_911
+
+#list messages bdore the SPD_911 was created
+$kafka-topics --list --zookeeper localhost:2181
+__confluent.support.metrics
+__consumer_offsets
+_schemas
+test_jdbc_user
+
+Topic:SPD_911   PartitionCount:1        ReplicationFactor:1     Configs:
+        Topic: SPD_911  Partition: 0    Leader: 0       Replicas: 0     Isr: 0
+
+		
+#create a new topic called test for use in testing
+
+kafka-topics --zookeeper localhost:2181 --create --topic test --partitions 1 --replication-factor 1
+Created topic "test".
+vagrant@vagrant-ubuntu-trusty-64:/vagrant$ kafka-topics --describe --zookeeper localhost:2181 --topic test
+Topic:test      PartitionCount:1        ReplicationFactor:1     Configs:
+        Topic: test     Partition: 0    Leader: 0       Replicas: 0     Isr: 0
+		
+
+#produce a few messages to kafka-topic
+#note producer uses port 9092 on the broker list
+kafka-console-producerm --broker-list localhost:9092 --topic test
+...
+my test message 1
+my test message 2
+^C
+
+#now in another window start the consumer to see the messages if they show up this means all the ports and localhost are working on the vm.
+kafka-console-consumer --zookeeper localhost:2181 --from-beginning --topic test
+vagrant@vagrant-ubuntu-trusty-64:/vagrant$ kafka-console-consumer --zookeeper localhost:2181 --from-beginning --topic test
+my test message 1
+my test message 2
+
+^CProcessed a total of 2 messages
+
+this shows the ports and all are working for producing messages and consuming messages.
+
+
+
+ 

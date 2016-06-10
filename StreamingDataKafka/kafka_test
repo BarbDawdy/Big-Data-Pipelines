@@ -1,0 +1,23 @@
+Once kafka is running:
+
+kafka-avro-console-producer \
+             --broker-list localhost:9092 --topic test \
+             --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"f1","type":"string"}]}'
+             
+Enter:
+{"f1": "value1"}
+{"f1": "value2"}
+{"f1": "value3"}
+
+ctrl+c
+
+
+kafka-avro-console-consumer --topic test \
+             --zookeeper localhost:2181 \
+             --from-beginning
+
+
+Expect:
+{"f1": "value1"}
+{"f1": "value2"}
+{"f1": "value3"}

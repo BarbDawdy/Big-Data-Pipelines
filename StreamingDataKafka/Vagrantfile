@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "deb" do |deb|
+    deb.vm.box = "ubuntu/trusty64"
+    deb.vm.provision "shell", path: "vagrant/deb.sh"
+  end
+#
+  config.vm.synced_folder "~/.gnupg", "/root/.gnupg", owner: "root", group: "root"
+#  config.vm.synced_folder ".", "//E:/dev/DataPipes/Assignment4/kafka-connect-blog", owner: "root", group: "root"
+#config.ssh.username = "vagrant"
+ # config.ssh.password = "vagrant"
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
+	#vb.gui = true
+  end
+end

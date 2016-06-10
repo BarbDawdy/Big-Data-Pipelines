@@ -1,0 +1,90 @@
+create table SPD_Report(id bigint(20) auto_increment,
+RMS_CDW_ID INT,
+General_Offense_Number INT,
+Offense_Code VARCHAR(5),
+Offense_Code_Extension VARCHAR(25),
+Offense_Type VARCHAR(50),
+Summary_Offense_Code VARCHAR(5),
+Summarized_Offense_Description VARCHAR(50),
+Date_Reported DATETIME,
+Occurred_Date_Range_Start DATETIME,
+Occurred_Date_Range_End DATETIME,
+Hundred_Block_Location VARCHAR(50),
+District_Sector VARCHAR(5),
+Zone_Beat VARCHAR(5),
+Census_Tract_2000 DECIMAL(10,4),
+Longitude DECIMAL(10,7),
+Latitude DECIMAL(10,7),
+Location VARCHAR(50),
+Month INT,
+Year INT,
+modified timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+PRIMARY KEY(id),
+INDEX report_modified_index (modified));
+
+
+ mysql -u root --password="mypassword" --local-infile demo
+
+LOAD DATA LOCAL INFILE 'SPD_Report2016quotesNew.txt' INTO TABLE SPD_Report
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(RMS_CDW_ID,General_Offense_Number,Offense_Code,Offense_Code_Extension,Offense_Type,Summary_Offense_Code,Summarized_Offense_Description,Date_Reported,Occurred_Date_Range_Start,Occurred_Date_Range_End,Hundred_Block_Location,District_Sector,Zone_Beat,Census_Tract_2000,Longitude,Latitude,Location,Month,Year);
+
+#due to 000 time date issues with java remove this column after addign in the data
+#this column is not really needed for our end goal.
+alter table SPD_Report drop column Occurred_Date_Range_End;   
+
+
+SHOW VARIABLES WHERE Variable_Name = "datadir";
+
+mysql> SHOW VARIABLES WHERE Variable_Name = "datadir"
+    -> ;
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| datadir       | /var/lib/mysql/ |
++---------------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> SHOW VARIABLES WHERE Variable_Name like "%dir";
++---------------------------+----------------------------+
+| Variable_name             | Value                      |
++---------------------------+----------------------------+
+| basedir                   | /usr                       |
+| character_sets_dir        | /usr/share/mysql/charsets/ |
+| datadir                   | /var/lib/mysql/            |
+| innodb_data_home_dir      |                            |
+| innodb_log_group_home_dir | ./                         |
+| lc_messages_dir           | /usr/share/mysql/          |
+| plugin_dir                | /usr/lib/mysql/plugin/     |
+| slave_load_tmpdir         | /tmp                       |
+| tmpdir                    | /tmp                       |
++---------------------------+----------------------------+
+9 rows in set (0.00 sec)
+
+mysql> SYSTEM cd /vagrant && ls
+clean_up.sh       report.txt         SPD_Report2016.csv        update_users.sql
+create_users.sql  schema_change.sql  SPD_Report2016quotes.txt  vagrant
+etc               setup1.sh          SPD_Report.csv            Vagrantfile
+New folder        setup.sh           SPD_Report.txt
+README.md         SPD_Report1.csv    start.sh
+mysql>
+
+mysql> select * from SPD_Report limit 10;
++------------+------------------------+--------------+------------------------+---------------------------+----------------------+--------------------------------+---------------------+---------------------------+-------------------------+------------------------------+-----------------+-----------+-------------------+--------------+------------+----------------+-------+------+
+| RMS_CDW_ID | General_Offense_Number | Offense_Code | Offense_Code_Extension | Offense_Type              | Summary_Offense_Code | Summarized_Offense_Description | Date_Reported       | Occurred_Date_Range_Start | Occurred_Date_Range_End | Hundred_Block_Location       | District_Sector | Zone_Beat | Census_Tract_2000 | Longitude    | Latitude   | Location       | Month | Year |
++------------+------------------------+--------------+------------------------+---------------------------+----------------------+--------------------------------+---------------------+---------------------------+-------------------------+------------------------------+-----------------+-----------+-------------------+--------------+------------+----------------+-------+------+
+|     603972 |                2016692 | X            | 69                     | VEH-RCVD-FOR OTHER AGENCY | X                    | VEHICLE THEFT                  | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 90XX BLOCK OF 46 AV S        | S               | S3        |        11800.4004 | -122.2742538 | 47.5228310 | '(47.522830963 |  -122 |    1 |
+|     603990 |                2016115 | 5404         | 0                      | DUI-LIQUOR                | 5400                 | DUI                            | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 4XX BLOCK OF AURORA AV N     | D               | D2        |         7200.1030 | -122.3436737 | 47.6226463 | '(47.622646332 |  -122 |    1 |
+|     604021 |                2016990 | 5404         | 0                      | DUI-LIQUOR                | 5400                 | DUI                            | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 10 AV / E PIKE ST            | E               | E2        |         7500.4016 | -122.3194504 | 47.6140823 | '(47.614082336 |  -122 |    1 |
+|     604031 |               20161071 | 2804         | 0                      | PROPERTY STOLEN-POSSESS   | 2800                 | STOLEN PROPERTY                | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 14XX BLOCK OF BROADWAY       | E               | E2        |         8400.1008 | -122.3207703 | 47.6135178 | '(47.613517761 |  -122 |    1 |
+|     604056 |               20161062 | 5499         | 0                      | TRAFFIC                   | 5400                 | TRAFFIC                        | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 24XX BLOCK OF BEACON AV S    | R               | R1        |         9400.4010 | -122.3142242 | 47.5814705 | '(47.58147049  |  -122 |    1 |
+|     604079 |               20161102 | 2404         | 1                      | VEH-THEFT-AUTO            | 2400                 | VEHICLE THEFT                  | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 5XX BLOCK OF QUEEN ANNE AV N | Q               | Q3        |         7100.2007 | -122.3567123 | 47.6239281 | '(47.62392807  |  -122 |    1 |
+|     604116 |               20161355 | X            | 69                     | VEH-RCVD-FOR OTHER AGENCY | X                    | VEHICLE THEFT                  | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 83XX BLOCK OF JONES AV NW    | J               | J2        |         3100.1004 | -122.3864822 | 47.6896362 | '(47.68963623  |  -122 |    1 |
+|     604169 |               20161246 | 5404         | 0                      | DUI-LIQUOR                | 5400                 | DUI                            | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | ALASKAN WY / MADISON ST      | K               | K1        |         8100.1046 | -122.3384247 | 47.6037788 | '(47.603778839 |  -122 |    1 |
+|     604180 |                2016994 | 2404         | 1                      | VEH-THEFT-AUTO            | 2400                 | VEHICLE THEFT                  | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | N 38 ST / WALLINGFORD AV N   | B               | B3        |         5100.3007 | -122.3362961 | 47.6531448 | '(47.653144836 |  -122 |    1 |
+|     604188 |               20161619 | X            | 69                     | VEH-RCVD-FOR OTHER AGENCY | X                    | VEHICLE THEFT                  | 0000-00-00 00:00:00 | 0000-00-00 00:00:00       | 0000-00-00 00:00:00     | 44XX BLOCK OF S BENEFIT ST   | S               | S3        |        11700.1014 | -122.2768097 | 47.5196533 | '(47.51965332  |  -122 |    1 |
++------------+------------------------+--------------+------------------------+---------------------------+----------------------+--------------------------------+---------------------+---------------------------+-------------------------+------------------------------+-----------------+-----------+-------------------+--------------+------------+----------------+-------+------+
+10 rows in set (0.00 sec)

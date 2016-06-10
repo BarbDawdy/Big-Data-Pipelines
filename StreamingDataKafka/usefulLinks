@@ -1,0 +1,24 @@
+Data Sources:
+https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp
+https://data.seattle.gov/Public-Safety/police-report/63pn-pi2t
+
+
+Concepts:
+Vagrant + Kafka + MySql + Spark + Hive
+http://www.confluent.io/blog/how-to-build-a-scalable-etl-pipeline-with-kafka-connect
+http://docs.confluent.io/2.0.0/connect/connect-jdbc/docs/index.html
+http://thegrimmscientist.com/2014/12/01/vagrant-tutorial-spark-in-a-vm/
+https://github.com/apache/spark/blob/master/examples/src/main/python/streaming/direct_kafka_wordcount.py
+http://kafka-python.readthedocs.io/en/master/usage.html
+http://wpcertification.blogspot.com/2014/08/python-client-for-publishing-and.html
+http://spark.apache.org/docs/latest/streaming-kafka-integration.html
+https://github.com/apache/spark/blob/master/examples/src/main/python/streaming/direct_kafka_wordcount.py
+
+http://www.confluent.io/blog/bottled-water-real-time-integration-of-postgresql-and-kafka/
+
+Issues resolutions:
+http://stackoverflow.com/questions/19320611/hadoop-hive-loading-data-from-csv-on-a-local-machine
+http://stackoverflow.com/questions/12940239/hadoop-hadoop-classpath-issues
+http://stackoverflow.com/questions/30906412/noclassdeffounderror-com-apache-hadoop-fs-fsdatainputstream-when-execute-spark-s
+http://stackoverflow.com/questions/3635166/how-to-import-csv-file-to-mysql-table
+http://stackoverflow.com/questions/29657330/joins-and-cogroup-in-spark
